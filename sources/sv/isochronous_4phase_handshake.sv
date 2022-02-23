@@ -38,7 +38,7 @@
 /// There are _no_ restrictions on which clock domain should be the faster, any integer
 /// ratio will work.
 
-`include "common_cells/registers.svh"
+`include "../include/registers.svh"
 
 module isochronous_4phase_handshake (
   input  logic src_clk_i,

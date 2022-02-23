@@ -15,7 +15,7 @@
 // Description: Simple test for showing address wrapping behavior of the function
 // `axi_pkg::beat_addr`
 
-`include "axi/assign.svh"
+`include "../include/assign.svh"
 /// Test bench for address generation
 module tb_axi_addr_test #(
   /// Number of calculated AX transfers
