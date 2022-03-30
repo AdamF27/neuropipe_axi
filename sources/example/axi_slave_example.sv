@@ -17,7 +17,7 @@ module axi_slave_example #(
     localparam ADDRLSB = $clog2(DATA_WIDTH) - 3;
 
     // Internal signals
-    wire axi_read_ready;
+    logic axi_read_ready;
     logic axi_write_ready;
 
     // Internal memory -- can be replaced with ram
@@ -27,8 +27,8 @@ module axi_slave_example #(
     //assign axi_l.ar_ready = 1'b1;
 
     // Read
-    always_ff @(posedge clk_i or posedge rstn_i) begin
-        if(~rstn_i) begin
+    always_ff @(posedge clk_i) begin
+        if(!rstn_i) begin
             axi_l.r_data <= 0;
         end else if (!axi_l.r_valid || axi_l.r_ready) begin
             case (axi_l.ar_addr)
@@ -42,8 +42,8 @@ module axi_slave_example #(
     end
 
     // Write
-    always_ff @(posedge clk_i or posedge rstn_i) begin
-        if(~rstn_i) begin
+    always_ff @(posedge clk_i) begin
+        if(!rstn_i) begin
             example_reg0 <= 0;
             example_reg1 <= 0;
             example_reg2 <= 0;
@@ -60,14 +60,11 @@ module axi_slave_example #(
     end
 
     // Read signaling
-    always_comb begin
-        axi_l.ar_ready = !axi_l.r_valid;
-    end
 
     assign axi_read_ready = axi_l.ar_valid && axi_l.ar_ready;
 
     always_ff @(posedge clk_i) begin
-        if (~rstn_i) begin
+        if (!rstn_i) begin
             axi_l.r_valid <= 1'b0; // valid must be cleared following any reset
         end else if (axi_l.ar_valid && axi_l.r_ready)
             axi_l.r_valid <= 1'b1;
@@ -75,9 +72,11 @@ module axi_slave_example #(
             axi_l.r_valid <= 1'b0;
     end
 
+    assign axi_l.ar_ready = !axi_l.r_valid;
+
     // Write signaling
-    always_ff @(posedge clk_i or posedge rstn_i) begin
-        if(~rstn_i) begin
+    always_ff @(posedge clk_i) begin
+        if(!rstn_i) begin
             axi_write_ready <= 1'b0;
         end else begin
             axi_write_ready <= !axi_write_ready && (axi_l.w_valid && axi_l.ar_valid)
@@ -89,8 +88,8 @@ module axi_slave_example #(
     assign axi_l.w_ready = axi_write_ready;
 
     // Write response
-    always_ff @(posedge clk_i or posedge rstn_i) begin
-        if(~rstn_i) begin
+    always_ff @(posedge clk_i) begin
+        if(!rstn_i) begin
             axi_l.b_valid <= 1'b0;
         end else if (axi_write_ready) begin
             axi_l.b_valid <= 1'b1;
@@ -100,8 +99,8 @@ module axi_slave_example #(
     end
 
     // Read response
-    always_ff @(posedge clk_i or posedge rstn_i) begin
-        if(~rstn_i) begin
+    always_ff @(posedge clk_i) begin
+        if(!rstn_i) begin
             axi_l.r_valid <= 1'b0;
         end else if (axi_read_ready) begin
             axi_l.r_valid <= 1'b1;
@@ -114,8 +113,8 @@ module axi_slave_example #(
     assign axi_l.r_resp = 2'b00;
 
     // Strobe
-    function void funcname();
+    /*function void funcname();
         
-    endfunction : funcname
+    endfunction : funcname*/
 
 endmodule
