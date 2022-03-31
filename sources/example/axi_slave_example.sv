@@ -1,12 +1,12 @@
 // An example AXI slave module
 
 module axi_slave_example #(
-    parameter DATA_WIDTH = 32,
-    parameter ADDR_WIDTH = 4
+    parameter ADDR_WIDTH = 0,
+    parameter DATA_WIDTH = 0
 ) (
-    AXI_LITE.Slave axi_l,
     input logic clk_i,
-    input logic rstn_i
+    input logic rstn_i,
+    axilITE.Slave axil
 );
     // Internal parameters
     /*
@@ -20,23 +20,32 @@ module axi_slave_example #(
     logic axi_read_ready;
     logic axi_write_ready;
 
+    logic [ADDR_WIDTH-ADDRLSB-1:0] aw_addr,
+                                   ar_addr;
+
+    assign aw_addr = axil.aw_addr[ADDR_WIDTH-1:ADDRLSB];
+    assign ar_addr = axil.ar_addr[ADDR_WIDTH-1:ADDRLSB];
+
     // Internal memory -- can be replaced with ram
-    logic [DATA_WIDTH-1:0] example_reg0, example_reg1, example_reg2, example_reg3;
+    logic [DATA_WIDTH-1:0] example_reg0,
+                           example_reg1,
+                           example_reg2,
+                           example_reg3;
 
     // Default state for ar_ready is high (A3.2.2)
-    //assign axi_l.ar_ready = 1'b1;
+    //assign axil.ar_ready = 1'b1;
 
     // Read
     always_ff @(posedge clk_i) begin
         if(!rstn_i) begin
-            axi_l.r_data <= 0;
-        end else if (!axi_l.r_valid || axi_l.r_ready) begin
-            case (axi_l.ar_addr)
-                2'b00: axi_l.r_data <= example_reg0;
-                2'b01: axi_l.r_data <= example_reg1;
-                2'b10: axi_l.r_data <= example_reg2;
-                2'b11: axi_l.r_data <= example_reg3;
-                default : axi_l.r_data <= example_reg0;
+            axil.r_data <= 0;
+        end else if (!axil.r_valid || axil.r_ready) begin
+            case (ar_addr)
+                2'b00: axil.r_data <= example_reg0;
+                2'b01: axil.r_data <= example_reg1;
+                2'b10: axil.r_data <= example_reg2;
+                2'b11: axil.r_data <= example_reg3;
+                default : axil.r_data <= example_reg0;
             endcase
         end
     end
@@ -49,68 +58,69 @@ module axi_slave_example #(
             example_reg2 <= 0;
             example_reg3 <= 0;
         end else if (axi_write_ready) begin
-            case (axi_l.aw_addr)
-                2'b00: example_reg0 <= axi_l.w_data;
-                2'b01: example_reg1 <= axi_l.w_data;
-                2'b10: example_reg2 <= axi_l.w_data;
-                2'b11: example_reg3 <= axi_l.w_data;
-                default: example_reg0 <= axi_l.w_data;
+            case (axil.aw_addr)
+                2'b00: example_reg0 <= axil.w_data;
+                2'b01: example_reg1 <= axil.w_data;
+                2'b10: example_reg2 <= axil.w_data;
+                2'b11: example_reg3 <= axil.w_data;
+                default: example_reg0 <= axil.w_data;
             endcase
         end
     end
 
     // Read signaling
 
-    assign axi_read_ready = axi_l.ar_valid && axi_l.ar_ready;
+    assign axi_read_ready = axil.ar_valid && axil.ar_ready;
 
     always_ff @(posedge clk_i) begin
         if (!rstn_i) begin
-            axi_l.r_valid <= 1'b0; // valid must be cleared following any reset
-        end else if (axi_l.ar_valid && axi_l.r_ready)
-            axi_l.r_valid <= 1'b1;
-        end else if (axi_l.r_ready)
-            axi_l.r_valid <= 1'b0;
+            axil.r_valid <= 1'b0; // valid must be cleared following any reset
+        end else if (axil.ar_valid && axil.r_ready)
+            axil.r_valid <= 1'b1;
+        end else if (axil.r_ready)
+            axil.r_valid <= 1'b0;
     end
 
-    assign axi_l.ar_ready = !axi_l.r_valid;
+    assign axil.ar_ready = !axil.r_valid;
 
     // Write signaling
     always_ff @(posedge clk_i) begin
         if(!rstn_i) begin
             axi_write_ready <= 1'b0;
         end else begin
-            axi_write_ready <= !axi_write_ready && (axi_l.w_valid && axi_l.ar_valid)
-                && (axi_l.b_ready || !axi_l.b_valid);
+            axi_write_ready <= !axi_write_ready 
+                               && (axil.w_valid && axil.aw_valid)
+                               && (axil.b_ready || !axil.b_valid);
         end
     end
 
-    assign axi_l.aw_ready = axi_write_ready;
-    assign axi_l.w_ready = axi_write_ready;
+    assign axil.aw_ready = axi_write_ready;
+    assign axil.w_ready = axi_write_ready;
 
     // Write response
     always_ff @(posedge clk_i) begin
         if(!rstn_i) begin
-            axi_l.b_valid <= 1'b0;
+            axil.b_valid <= 1'b0;
         end else if (axi_write_ready) begin
-            axi_l.b_valid <= 1'b1;
-        end else if (axi_l.b_ready) begin
-            axi_l.b_valid <= 1'b0;
+            axil.b_valid <= 1'b1;
+        end else if (axil.b_ready) begin
+            axil.b_valid <= 1'b0;
         end
     end
 
     // Read response
     always_ff @(posedge clk_i) begin
         if(!rstn_i) begin
-            axi_l.r_valid <= 1'b0;
+            axil.r_valid <= 1'b0;
         end else if (axi_read_ready) begin
-            axi_l.r_valid <= 1'b1;
-        end else if (axi_l.r_ready) begin
-            axi_l.r_valid <= 1'b0;
+            axil.r_valid <= 1'b1;
+        end else if (axil.r_ready) begin
+            axil.r_valid <= 1'b0;
         end
     end
 
-    assign axi_l.b_resp = 2'b00;
-    assign axi_l.r_resp = 2'b00;
+    assign axil.b_resp = 2'b00;
+    assign axil.r_resp = 2'b00;
 
     // Strobe
     /*function void funcname();
