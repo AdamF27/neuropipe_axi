@@ -1,4 +1,4 @@
-interface AXIL_IF #(
+interface AXI_LITE #(
 	parameter int unsigned ADDR_WIDTH = 0,
 	parameter int unsigned DATA_WIDTH = 0
 );
