@@ -1,12 +1,13 @@
 // An example AXI slave module
 `timescale 1ns/1ps
 
-module axi_slave_example #(
+module axi_lite_slave_ex #(
     parameter ADDR_WIDTH = 0,
     parameter DATA_WIDTH = 0
 ) (
-    input logic clk_i,
-    input logic rstn_i,
+    input clk_i,
+    input rstn_i,
+    
     AXI_LITE axil
 );
     // Internal parameters
@@ -32,9 +33,6 @@ module axi_slave_example #(
                            example_reg1,
                            example_reg2,
                            example_reg3;
-
-    // Default state for arready is high (A3.2.2)
-    //assign axil.arready = 1'b1;
 
     // Read
     always @(posedge clk_i) begin
