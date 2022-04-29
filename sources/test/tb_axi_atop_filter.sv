@@ -13,7 +13,7 @@
 
 // Testbench for axi_atop_filter
 
-`include "axi/assign.svh"
+`include "../include/assign.svh"
 
 module tb_axi_atop_filter #(
   // AXI Parameters

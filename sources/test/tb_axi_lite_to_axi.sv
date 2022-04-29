@@ -13,7 +13,7 @@
 // - Andreas Kurth <akurth@iis.ee.ethz.ch>
 // - Florian Zaruba <zarubaf@iis.ee.ethz.ch>
 
-`include "axi/assign.svh"
+`include "../include/assign.svh"
 
 module tb_axi_lite_to_axi;
 

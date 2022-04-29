@@ -12,8 +12,8 @@
 // - Andreas Kurth <akurth@iis.ee.ethz.ch>
 // - Wolfgang Roenninger <wroennin@iis.ee.ethz.ch>
 
-`include "axi/typedef.svh"
-`include "axi/assign.svh"
+`include "../include/typedef.svh"
+`include "../include/assign.svh"
 
 module tb_axi_cdc #(
   // AXI Parameters

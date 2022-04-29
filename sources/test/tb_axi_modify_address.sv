@@ -11,8 +11,8 @@
 // Authors:
 // - Andreas Kurth <akurth@iis.ee.ethz.ch>
 
-`include "axi/assign.svh"
-`include "axi/typedef.svh"
+`include "../include/assign.svh"
+`include "../include/typedef.svh"
 
 /// Testbench for `axi_modify_address`
 module tb_axi_modify_address #(

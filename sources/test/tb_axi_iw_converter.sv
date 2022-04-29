@@ -12,8 +12,8 @@
 //         Florian Zaruba <zarubaf@iis.ee.ethz.ch>
 //         Wolfgang Roennigner <wroennin@iis.ee.ethz.ch>
 
-`include "axi/assign.svh"
-`include "axi/typedef.svh"
+`include "../include/assign.svh"
+`include "../include/typedef.svh"
 
 class tb_iw_converter_ax #(
   type ax_t = logic,

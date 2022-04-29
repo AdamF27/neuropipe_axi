@@ -13,7 +13,7 @@
 
 // Directed Random Verification Testbench for `axi_lite_regs`.
 
-`include "axi/assign.svh"
+`include "../include/assign.svh"
 
 /// Testbench for validating the module `axi_lite_regs`.
 module tb_axi_lite_regs #(

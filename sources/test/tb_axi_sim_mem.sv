@@ -4,8 +4,8 @@
 // Authors:
 // - Andreas Kurth <akurth@iis.ee.ethz.ch>
 
-`include "axi/assign.svh"
-`include "axi/typedef.svh"
+`include "../include/assign.svh"
+`include "../include/typedef.svh"
 
 /// Testbench for `axi_sim_mem`
 module tb_axi_sim_mem #(

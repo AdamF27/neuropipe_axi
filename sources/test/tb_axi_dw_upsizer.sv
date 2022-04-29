@@ -11,7 +11,7 @@
 // Authors:
 // - Matheus Cavalcante <matheusd@iis.ee.ethz.ch>
 
-`include "axi/assign.svh"
+`include "../include/assign.svh"
 
 module tb_axi_dw_upsizer #(
     // AXI Parameters

@@ -16,8 +16,8 @@
 //              Each APB slave is simulated by randomly updating its response signals each clock
 //              Cycle. There are some assertions testing sequences for correct APB4 signaling.
 
-`include "axi/typedef.svh"
-`include "axi/assign.svh"
+`include "../include/typedef.svh"
+`include "../include/assign.svh"
 
 module tb_axi_lite_to_apb #(
   parameter bit TbPipelineRequest = 1'b0,
